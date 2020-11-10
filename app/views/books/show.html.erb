@@ -1,0 +1,70 @@
+
+<div class="container"> 
+	<div class="row">
+		<div class="col-xs-3">
+	
+			<h2>User info</h2>
+			<%= render 'users/profile', user: @user %>
+	
+			<h2>New book</h2>
+			<%= render 'books/form', book: @new_book %>
+	
+		</div>
+	
+		<div class="col-xs-9">
+			<h2>Book detail</h2>
+			<table class="table">
+				<tr>
+					<td>
+						<%= link_to user_path(@user.id) do %>
+							<%= attachment_image_tag @user, :profile_image, :fill, 100, 100, fallback: "no_image.jpg", size:'100x100' %><br>
+						<%= @user.name %>
+						<% end %>
+					</td>
+					<td><%= link_to @book.title, book_path(@book) %></td>
+					<td><%= @book.body %></td>
+					<% if @user.id == current_user.id %>
+					<td><%= link_to "Edit", edit_book_path(@book), class: "btn-sm btn-success edit_book_#{@book.id}" %></td>
+					<td><%= link_to "Destroy", book_path(@book), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_book_#{@book.id}" %></td>
+		            <% if @book.favorited_by?(current_user) %>
+		              <th>
+		                <%= link_to book_favorites_path(@book), method: :delete do %>
+		                <i><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></i>
+		                <%= @book.favorites.count %>
+		              </th>
+		            <% end %>
+		            <% else %>
+		              <th>
+		                <%= link_to book_favorites_path(@book), method: :post do %>
+		                  <i><span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span></i>
+		                  <%= @book.favorites.count %>
+		                <% end %>
+		              </th>
+		            <% end %>
+					</td>
+					<% end %>
+				</tr>
+			</table>
+			
+		    <li>
+			  <i class="fa fa-comment"></i>
+			  <a href="#comments"><%= @book.post_comments.count %>件のコメント</a>
+			</li>
+
+			<div id="comments_area">
+			  <%= render partial: 'books/book', locals: { book: @book } %>
+	        </div>		
+                                 <!-- コメントフォームここから-->
+			<%= form_for [@book, @post_comment], remote: true do |f| %>
+			<div class="row">
+				<div class="col-sm-12">
+					<%= f.text_area :comment, rows:'5', class: "form-control",placeholder: "コメントをここに記入" %>
+				</div>
+			</div>
+			<%= f.submit "送信", class: "btn btn-sm btn-base-1 mt-20 pull-right" %>
+			<% end %>
+                                 <!-- コメントフォームここまで-->				
+		</div>
+	</div>
+</div>
+

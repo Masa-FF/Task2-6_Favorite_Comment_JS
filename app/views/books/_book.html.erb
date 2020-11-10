@@ -1,0 +1,25 @@
+<ol>
+  <% @book.post_comments.each do |post_comment| %>
+    <li class="comments_area">
+      <div class="comment-body bb">
+        <div class="comment-avatar">
+          <div class="avatar">
+            <%= attachment_image_tag @user, :profile_image, :fill, 50, 50, fallback: "no_image.jpg", size:'50x50' %>
+          </div>
+        </div>
+        <div class="comment-text">
+          <div class="comment-author clearfix">
+            <a href="#" class="link-author"><%= post_comment.user.name %></a>
+            <span class="comment-meta">
+              <span class="comment-date"><%= post_comment.created_at.strftime('%Y/%m/%d') %></span>
+            </span>
+          </div>
+          <div class="comment-entry"><%= post_comment.comment %></div>
+        </div>
+        <% if post_comment.user == current_user %>
+          <%= link_to "destroy", book_post_comment_path(post_comment.book, post_comment), method: :delete, class: "btn-sm btn-danger pull-right", remote: true %>
+        <% end %>
+      </div>
+    </li>
+  <% end %>
+</ol>
